@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navItemMyProfile"
+            android:title="@string/nav_item_my_profile"/>
+        <item
+            android:id="@+id/navItemPosts"
+            android:checked="true"
+            android:title="@string/nav_item_posts"/>
+        <item
+            android:id="@+id/navItemLogout"
+            android:title="@string/nav_item_logout"
+            android:checkable="false"/>
+    </group>
+</menu>
