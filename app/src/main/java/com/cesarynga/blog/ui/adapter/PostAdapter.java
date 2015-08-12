@@ -17,9 +17,14 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
     private List<Post> mPosts;
+    private OnItemClickListener mItemClickListener;
 
     public PostAdapter(List<Post> posts) {
         mPosts = posts;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mItemClickListener = listener;
     }
 
     @Override
@@ -31,6 +36,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         viewHolder.txtTitle.setText(mPosts.get(position).title);
+        viewHolder.txtAuthor.setText("by César Ynga");
     }
 
     @Override
@@ -38,11 +44,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         return mPosts.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView txtTitle;
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public final TextView txtTitle, txtAuthor;
+
         public ViewHolder(View itemView) {
             super(itemView);
             txtTitle = (TextView) itemView.findViewById(R.id.txtTitle);
+            txtAuthor = (TextView) itemView.findViewById(R.id.txtAuthor);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
     }
 }
