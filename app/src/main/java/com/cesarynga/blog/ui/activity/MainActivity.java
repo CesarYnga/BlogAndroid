@@ -2,6 +2,7 @@ package com.cesarynga.blog.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
@@ -14,11 +15,14 @@ import com.cesarynga.blog.R;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText mEdtEmail, mEdtPassword;
+    private TextInputLayout mTilEmail, mTilPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mTilEmail = (TextInputLayout) findViewById(R.id.tilEmail);
+        mTilPassword = (TextInputLayout) findViewById(R.id.tilPassword);
         mEdtEmail = (EditText) findViewById(R.id.edtEmail);
         mEdtPassword = (EditText) findViewById(R.id.edtPassword);
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -51,16 +55,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean validateLoginInput() {
         if (mEdtEmail.getText().toString().isEmpty()) {
-            mEdtEmail.setError(getString(R.string.text_error_empty_field));
+            mTilEmail.setError(getString(R.string.text_error_empty_field));
             return false;
+        } else {
+            if (!Patterns.EMAIL_ADDRESS.matcher(mEdtEmail.getText()).matches()) {
+                mTilEmail.setError(getString(R.string.text_error_email_invalid));
+                return false;
+            }
+            mTilEmail.setError(null);
         }
         if (mEdtPassword.getText().toString().isEmpty()) {
-            mEdtPassword.setError(getString(R.string.text_error_empty_field));
+            mTilPassword.setError(getString(R.string.text_error_empty_field));
             return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(mEdtEmail.getText()).matches()) {
-            mEdtEmail.setError(getString(R.string.text_error_email_invalid));
-            return false;
+        } else {
+            mTilPassword.setError(null);
         }
         return true;
     }

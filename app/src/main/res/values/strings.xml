@@ -14,4 +14,8 @@
     <string name="nav_item_my_profile">My Profile</string>
     <string name="nav_item_logout">Logout</string>
 
+    <string name="tab_all">All</string>
+    <string name="tab_my_posts">My Post</string>
+    <string name="tab_favorites">Favorites</string>
+
 </resources>
