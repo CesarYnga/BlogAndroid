@@ -1,5 +1,6 @@
 package com.cesarynga.blog.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -10,12 +11,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.cesarynga.blog.R;
+import com.cesarynga.blog.model.User;
+import com.cesarynga.blog.networking.GsonRequest;
+import com.cesarynga.blog.networking.VolleyManager;
+import com.cesarynga.blog.networking.requestbody.LoginRequestBody;
+import com.cesarynga.blog.networking.url.URLS;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "MainActivity";
+
     private EditText mEdtEmail, mEdtPassword;
     private TextInputLayout mTilEmail, mTilPassword;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView txtSignUp = (TextView) findViewById(R.id.txtSignUp);
         btnLogin.setOnClickListener(this);
         txtSignUp.setOnClickListener(this);
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage("Loading ...");
     }
 
     @Override
@@ -74,12 +89,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void performLoginRequest() {
-        // TODO: Make the request
-        startHomeActivity();
+        mProgressDialog.show();
+        LoginRequestBody body = new LoginRequestBody();
+        body.email = mEdtEmail.getText().toString();
+        body.password = mEdtPassword.getText().toString();
+        GsonRequest<User> request = new GsonRequest<>(Request.Method.POST, URLS.URL_LOGIN,
+                body, User.class, new Response.Listener<User>() {
+            @Override
+            public void onResponse(User response) {
+                mProgressDialog.dismiss();
+                startHomeActivity(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e(error, "Error during login request");
+                mProgressDialog.dismiss();
+            }
+        });
+        VolleyManager.getInstance(this).addToRequestQueue(request);
     }
 
-    private void startHomeActivity() {
+    private void startHomeActivity(User user) {
         Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(HomeActivity.EXTRA_USER, user);
         startActivity(intent);
         finish();
     }

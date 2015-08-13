@@ -17,6 +17,8 @@ import com.cesarynga.blog.ui.fragment.PostsFragment;
  */
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String EXTRA_USER = "user";
+
     private DrawerLayout mDrawerLayout;
 
     @Override
